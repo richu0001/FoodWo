@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const useragent = require('express-useragent');
 const { userAuth } = require('../middleware/sessionAuth')
 const { isBlocked } = require('../middleware/userBlocked')
 const { upload, profileUpload } = require('../middleware/multer')
@@ -73,6 +74,18 @@ router.route('/review')
 
 // User Session Middleware
 router.use(userAuth)
+router.use((req, res, next) => {
+    const userAgent = req.get('user-agent');
+    // console.log('User-Agent:', userAgent);
+  
+    // You can use a library like 'express-useragent' to parse the user-agent string for more details
+    // Install it using: npm install express-useragent
+    // const useragent = require('express-useragent');
+    const userAgentDetails = useragent.parse(userAgent);
+    console.log('User-Agent Details:', userAgentDetails);
+  
+    next();
+  });
 
 // Checking wether User is Blocked or Not
 router.use(isBlocked)
